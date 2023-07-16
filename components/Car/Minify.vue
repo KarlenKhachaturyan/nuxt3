@@ -1,3 +1,15 @@
+<script setup>
+const props = defineProps({
+  carData: {
+    type: Object,
+    required: true
+  }
+})
+const handleClick = () => {
+    navigateTo(`/car/${props.carData.name}-${props.carData.id}`)
+}
+</script>
+
 <template>
      <div class="
        shadow
@@ -7,10 +19,12 @@
        mb-5 
        cursor-pointer
        h-[200px]
-     ">
+     "
+     @click="handleClick"
+     >
         <div class="flex h-full">
         <img
-            src="https://hips.hearstapps.com/hmg-prod/images/2024-lamborghini-revuelto-127-641a1d518802b.jpg?crop=0.813xw:0.721xh;0.0994xw,0.128xh&resize=1200:*"
+            :src="carData.url"
             alt="car" class="
         w-[300px] 
         h-full
@@ -22,10 +36,10 @@
             flex-col
         ">
             <div>
-            <h2 class="text-2xl text-blue-400"> Lamborghini</h2>
-            <p class="text-gray-700">Lorem ipsum dolor sit, amet consectetur adipisicing elit. </p>
+            <h2 class="text-2xl text-blue-400"> {{ carData.name }}</h2>
+            <p class="text-gray-700">{{ carData.description }} </p>
             </div>
-            <h4 class="mt-auto text-blue-700">Price: $70,000</h4>
+            <h4 class="mt-auto text-blue-700">Price: ${{ carData.price }}</h4>
         </div>
         </div>
 

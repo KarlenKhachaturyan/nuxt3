@@ -1,7 +1,10 @@
 # Learning Nuxt 3 from Udemy course
 
 Since the course has 23 sections. I've decided to comemorate what I
-learn inside Readme file
+learn inside Readme file.
+
+
+## Section 1-3
 
 At first chapter I've learned that you can create dynamic pages within pages directory in a very interesting updated way.
 For example
@@ -18,6 +21,33 @@ For example
 [name]-[id].vue
 ```
 
+
+## Section 4
+` useError ` composables is used to catch the error with some values. As an example look inside `error.vue` file.
+
+In order to handle client side errors you can use ` NuxtErrorBoundary ` built in functionality.
+For that you should wrap the necessary parts like in example below to get the error object and display the message more UI friendly way.
+Example
+
+```bash
+
+  <NuxtErrorBoundary >
+    <car-side-bar />
+    <NuxtPage />
+    <template #error="{error}">
+        <div class="text-center mx-auto flex flex-col">
+        <h3>Sorry, something went wrong</h3>
+        <code>{{ error }}</code>
+        <button
+            @click="error.value = null"
+            class="px-6 py-2 text-sm font-semibold text-blue-800 bg-blue-100"
+        >
+            Go Back
+        </button>
+        </div>
+    </template>
+    </NuxtErrorBoundary>
+```
 # Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
