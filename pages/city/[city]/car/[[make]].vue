@@ -1,0 +1,3 @@
+<template>
+  <car-cards />
+</template>
