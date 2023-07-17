@@ -1,10 +1,19 @@
 <script setup>
+import heartFilled from '@/assets/heartFilled.png'
+import heartOutline from '@/assets/heartOutline.png'
+
 const props = defineProps({
   carData: {
     type: Object,
     required: true
+  },
+  favored: {
+    type: Boolean
   }
 })
+
+const emits = defineEmits(['addToFavorite'])
+
 const handleClick = () => {
     navigateTo(`/car/${props.carData.name}-${props.carData.id}`)
 }
@@ -12,6 +21,7 @@ const handleClick = () => {
 
 <template>
      <div class="
+       relative
        shadow
        border
        w-full
@@ -19,17 +29,24 @@ const handleClick = () => {
        mb-5 
        cursor-pointer
        h-[200px]
-     "
-     @click="handleClick"
-     >
-        <div class="flex h-full">
-        <img
+     ">
+        <img 
+          class="absolute w-7 right-5 top-2 z-20" 
+          :src="favored ? heartFilled : heartOutline" 
+          alt=""
+          @click="emits('addToFavorite', carData.id)"
+        >
+        <div 
+          class="flex h-full" 
+          @click="handleClick"
+        > 
+        <NuxtImg
             :src="carData.url"
             alt="car" class="
         w-[300px] 
         h-full
         object-cover
-        ">
+        " />
         <div class="
             p-4
             flex

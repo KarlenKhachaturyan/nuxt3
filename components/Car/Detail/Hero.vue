@@ -29,11 +29,11 @@ miles} = defineProps({
 
 <template>
      <div class="mt-10">
-        <img 
+        <NuxtImg
             :src="image" 
             alt=""
             class="w-full"
-        >
+        />
         <h3 class="text-4xl mt-10">{{ name }}</h3>
 
         <div class="flex justify-between items-center mt-10 border-b pb-5">
