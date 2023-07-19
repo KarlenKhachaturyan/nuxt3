@@ -5,11 +5,30 @@ const modal = ref({
   year: false
 })
 
-const city = ref('')
-const make = ref('')
-const year = ref('')
-
+const { makes } = useCars()
 const route = useRoute()
+const router = useRouter()
+
+const city = ref('')
+const priceRange = ref({
+  min: '',
+  max: ''
+})
+const priceRangeText = computed(() => {
+  const minPrice = route.query.minPrice
+  const maxPrice = route.query.maxPrice
+
+  return !minPrice && !maxPrice 
+                  ? 'Any' 
+                  : !minPrice && maxPrice
+                  ? `< $${maxPrice}`
+                  : minPrice && !maxPrice
+                  ? `$${minPrice} > `
+                  : minPrice && maxPrice 
+                  ? `$${minPrice}-$${maxPrice}` : ''
+})
+
+
 const changeCity = () => {
   if(!city.value) return
   if(!isNaN(parseInt(city.value))){
@@ -18,10 +37,26 @@ const changeCity = () => {
       message: "Invalid City"
     })
   }
-  showModal('location')
+  updateModal('location')
   navigateTo(`/city/${city.value}/car/${route.params.make}`)
 }
-const showModal = (key) => {
+const changeMake = (make) => {
+    updateModal('make')
+    navigateTo(`/city/${route.params.city}/car/${make}`)
+}
+const changeRange = () => {
+  if(priceRange.value.min && pricaRange.value.max){
+    if(priceRange.value.min > priceRange.value.max) return
+  }
+
+  router.push({
+    query: {
+      minPrice: priceRange.value.min,
+      maxPrice: priceRange.value.max
+    }
+  })
+}
+const updateModal = (key) => {
   modal.value[key] = !modal.value[key]
 }
 
@@ -35,7 +70,8 @@ const showModal = (key) => {
      z-30
      h-[190px]
    ">
-        <div class="
+    <!-- location -->
+      <div class="
        p-5
        flex
        justify-between
@@ -44,7 +80,7 @@ const showModal = (key) => {
        border-b
      ">
         <h3>Location</h3>
-        <h3 @click="showModal('location')" class="text-blue-400 capitalize">{{route.params.city}}</h3>
+        <h3 @click="updateModal('location')" class="text-blue-400 capitalize">{{route.params.city}}</h3>
         <div 
           v-if="modal.location"
         class="
@@ -61,6 +97,7 @@ const showModal = (key) => {
           <button @click="changeCity" class="bg-blue-400 w-full mt-2 rounded text-white p-1"> Apply</button>
         </div>
       </div>
+    <!-- make -->
       <div class="
        p-5
        flex
@@ -70,7 +107,12 @@ const showModal = (key) => {
        border-b
      ">
         <h3>Make</h3>
-        <h3 @click="showModal('make')" class="text-blue-400 capitalize">BMW</h3>
+        <h3 
+          @click="updateModal('make')" 
+          class="text-blue-400 capitalize"
+        >
+          {{ route.params.make || 'Any'  }}
+        </h3>
         <div 
         v-if="modal.make"
         class="
@@ -82,36 +124,57 @@ const showModal = (key) => {
             top-1 
             -m-1 
             bg-white
+            flex
+            flex-wrap
+            justify-between
+            w-[600px]
         ">
-            <input class="border p-1 rounded" type="text">
-            <button class="bg-blue-400 w-full mt-2 rounded text-white p-1"> Apply</button>
+            <h5 
+              v-for="make in makes" 
+              :key="make" 
+              class="
+                w-1/3
+                hover:border-2
+                m-3
+              "
+              @click="changeMake(make)"
+            >
+              {{ make }}
+            </h5>
         </div>
       </div>
-    <div class="
-       p-5
-       flex
-       justify-between
-       relative
-       cursor-pointer
-       border-b
-     ">
-        <h3>Price</h3>
-        <h3 @click="showModal('year')" class="text-blue-400 capitalize">$</h3>
-        <div 
-          v-if="modal.year"
-          class="
-                absolute 
-                border 
-                shadow 
-                left-56 
-                p-5 
-                top-1 
-                -m-1 
-                bg-white
-              ">
-              <input class="border p-1 rounded" type="text">
-              <button class="bg-blue-400 w-full mt-2 rounded text-white p-1"> Apply</button>
+    <!-- price -->
+      <div class="
+        p-5
+        flex
+        justify-between
+        relative
+        cursor-pointer
+        border-b
+      ">
+          <h3>Price</h3>
+          <h3
+            @click="updateModal('year')" 
+            class="text-blue-400 capitalize"
+          >
+            {{priceRangeText}}
+          </h3>
+          <div 
+            v-if="modal.year"
+            class="
+                  absolute 
+                  border 
+                  shadow 
+                  left-56 
+                  p-5 
+                  top-1 
+                  -m-1 
+                  bg-white
+                ">
+                <input class="border p-1 rounded mb-3" type="number" v-model="priceRange.min" placeholder="Min" min="0">
+                <input class="border p-1 rounded mb-3" type="number" v-model="priceRange.max" placeholder="Max" min='0' max="100000000000">
+                <button @click="changeRange" class="bg-blue-400 w-full mt-2 rounded text-white p-1"> Apply</button>
+            </div>
           </div>
-        </div>
-    </div>
+      </div>
 </template>
